@@ -7,7 +7,9 @@ terraform {
   }
 }
 
-provider "aws" {}
+provider "aws" {
+  region = "ap-northeast-3"
+}
 
 resource "aws_instance" "instance" {
   count         = 1
