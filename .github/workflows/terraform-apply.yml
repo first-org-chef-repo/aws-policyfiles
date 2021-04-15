@@ -45,9 +45,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         run: |
           terraform init
-          terraform apply
-          sleep 60
-          terraform destroy
+          terraform apply -auto-approve
           knife node list -c .chef/config.rb | grep "aws" | xargs knife node delete -y -c .chef/config.rb || echo "node deletion failed somehow"
           knife client list -c .chef/config.rb | grep "aws" | xargs knife client delete -y -c .chef/config.rb || echo "client delete failed somehow"
   
