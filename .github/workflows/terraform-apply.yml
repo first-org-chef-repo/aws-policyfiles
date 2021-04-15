@@ -52,6 +52,9 @@ jobs:
   Terraform-Apply:
     runs-on: self-hosted
     needs: Push-Policyfile
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: Cleaning up previous AWS 
         run: |
@@ -61,9 +64,9 @@ jobs:
           knife client list -c .chef/config.rb | grep "aws" | xargs knife client delete -y -c .chef/config.rb || echo "client delete failed somehow"
       
       - name: Running Terraform
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        # env:
+        #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           terraform init
           terraform apply -auto-approve
