@@ -39,7 +39,7 @@ resource "aws_instance" "instance" {
       host = self.public_ip
       user = "ec2-user"
       type = "ssh"
-      private_key = file("/home/r-goto/r-goto_aws.pem")
+      private_key = file("/home/r-goto/r-goto_aws-osaka.pem")
     }
   }
 
@@ -51,7 +51,7 @@ resource "aws_instance" "instance" {
       host = self.public_ip
       user = "ec2-user"
       type = "ssh"
-      private_key = file("/home/r-goto/r-goto_aws.pem")
+      private_key = file("/home/r-goto/r-goto_aws-osaka.pem")
     }
   }
 
