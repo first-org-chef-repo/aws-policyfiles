@@ -13,13 +13,13 @@ provider "aws" {
 
 resource "aws_instance" "instance" {
   count         = 1
-  ami           = "ami-06098fd00463352b6"
+  ami           = "ami-0b96303a469fa0678"
   instance_type = "t2.micro"
   vpc_security_group_ids = [
-    "sg-05e257e5f67735da5",
+    "sg-0803dfbfc0c77a2f4",
   ]
-  subnet_id = "subnet-ee0c39a8"
-  key_name = "r-goto"
+  subnet_id = "subnet-130aaf5e"
+  key_name = "r-goto-osaka"
   tags = {
     Owner = "r-goto"
     Name = format("chef-demo-node-web%02d", count.index + 1)
