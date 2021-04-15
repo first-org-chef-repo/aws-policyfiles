@@ -6,19 +6,6 @@ jobs:
   Setup-Terraform:
     runs-on: self-hosted
     steps:
-      - name: Chef Installed?
-        continue-on-error: true
-        id: check-chef
-        run: chef -v
-        
-      - name: Install ChefWorkstation v21.2.278
-        if: steps.check-chef.outcome == 'failure'
-        run: |
-          wget https://packages.chef.io/files/stable/chef-workstation/21.2.278/el/8/chef-workstation-21.2.278-1.el7.x86_64.rpm
-          sudo rpm -ivh chef-workstation-21.2.278-1.el7.x86_64.rpm
-          rm chef-workstation-21.2.278-1.el7.x86_64.rpm
-          chef -v
-
       - name: Terraform Installed?
         continue-on-error: true
         id: check-terraform
@@ -33,9 +20,25 @@ jobs:
           sudo yum install -y terraform
           terraform -v
 
+  Setup-ChefWorkstation:
+    runs-on: self-hosted
+    steps:
+      - name: Chef Installed?
+        continue-on-error: true
+        id: check-chef
+        run: chef -v
+        
+      - name: Installing ChefWorkstation v21.2.278
+        if: steps.check-chef.outcome == 'failure'
+        run: |
+          wget https://packages.chef.io/files/stable/chef-workstation/21.2.278/el/8/chef-workstation-21.2.278-1.el7.x86_64.rpm
+          sudo rpm -ivh chef-workstation-21.2.278-1.el7.x86_64.rpm
+          rm chef-workstation-21.2.278-1.el7.x86_64.rpm
+          chef -v
+
   Push-Policyfile:
     runs-on: self-hosted
-    needs: Setup-Terraform
+    needs: [ Setup-Terraform, Setup-ChefWorkstation ]
     steps:
       - uses: actions/checkout@v2
       - name: Pushing Policyfile to ChefServer
@@ -48,7 +51,7 @@ jobs:
           
   Terraform-Apply:
     runs-on: self-hosted
-    needs: Setup-Terraform
+    needs: Push-Policyfile
     steps:
       - name: Running Terraform
         env:

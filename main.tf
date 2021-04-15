@@ -21,6 +21,7 @@ resource "aws_instance" "instance" {
   tags = {
     Owner = "r-goto"
     Name = format("chef-demo-node-web%02d", count.index + 1)
+    Project = "chef-demo"
   }
 
   provisioner "remote-exec" {
