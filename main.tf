@@ -14,7 +14,7 @@ provider "aws" {
 resource "aws_instance" "instance" {
   count         = 1
   ami           = "ami-0b96303a469fa0678"
-  instance_type = "t2.micro"
+  instance_type = "t2.large"
   vpc_security_group_ids = [
     "sg-0803dfbfc0c77a2f4",
   ]
