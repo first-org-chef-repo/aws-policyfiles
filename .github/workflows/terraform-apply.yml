@@ -33,11 +33,23 @@ jobs:
           sudo yum install -y terraform
           terraform -v
 
-  Terraform-Apply:
+  Push-Policyfile:
     runs-on: self-hosted
     needs: Setup-Terraform
     steps:
       - uses: actions/checkout@v2
+      - name: Pushing Policyfile to ChefServer
+        run: |
+          rm -rf policyfiles/*.lock.json
+          chef update policyfiles/db-server.rb -c .chef/config.rb
+          chef update policyfiles/web-server.rb -c .chef/config.rb
+          chef push aws policyfiles/db-server.rb -c .chef/config.rb
+          chef push aws policyfiles/web-server.rb -c .chef/config.rb
+          
+  Terraform-Apply:
+    runs-on: self-hosted
+    needs: Setup-Terraform
+    steps:
       - name: Running Terraform
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
