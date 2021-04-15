@@ -10,9 +10,9 @@ terraform {
 provider "aws" {}
 
 resource "aws_instance" "instance" {
-  count         = 2
+  count         = 1
   ami           = "ami-06098fd00463352b6"
-  instance_type = "t2.large"
+  instance_type = "t2.micro"
   vpc_security_group_ids = [
     "sg-05e257e5f67735da5",
   ]

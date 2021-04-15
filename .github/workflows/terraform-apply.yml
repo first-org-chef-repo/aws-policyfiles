@@ -1,6 +1,4 @@
-# This is a basic workflow to help you get started with Actions
-
-name: Converge All Nodes 
+name: Create AWS Instances
 
 on: workflow_dispatch
 
@@ -8,6 +6,19 @@ jobs:
   Setup-Terraform:
     runs-on: self-hosted
     steps:
+      - name: Chef Installed?
+        continue-on-error: true
+        id: check-chef
+        run: chef -v
+        
+      - name: Install ChefWorkstation v21.2.278
+        if: steps.check-chef.outcome == 'failure'
+        run: |
+          wget https://packages.chef.io/files/stable/chef-workstation/21.2.278/el/8/chef-workstation-21.2.278-1.el7.x86_64.rpm
+          sudo rpm -ivh chef-workstation-21.2.278-1.el7.x86_64.rpm
+          rm chef-workstation-21.2.278-1.el7.x86_64.rpm
+          chef -v
+
       - name: Terraform Installed?
         continue-on-error: true
         id: check-terraform
@@ -18,11 +29,11 @@ jobs:
         run: |
           sudo yum install -y wget unzip
           sudo yum install -y yum-utils
-          sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/$release/hashicorp.repo
+          sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
           sudo yum install -y terraform
           terraform -v
 
-  Terraform-Init:
+  Terraform-Apply:
     runs-on: self-hosted
     needs: Setup-Terraform
     steps:
@@ -37,6 +48,8 @@ jobs:
           terraform apply
           sleep 60
           terraform destroy
+          knife node list -c .chef/config.rb | grep "aws" | xargs knife node delete -y -c .chef/config.rb || echo "node deletion failed somehow"
+          knife client list -c .chef/config.rb | grep "aws" | xargs knife client delete -y -c .chef/config.rb || echo "client delete failed somehow"
   
   # Converge-Nodes:
   #   runs-on: self-hosted
