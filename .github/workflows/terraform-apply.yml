@@ -80,13 +80,13 @@ jobs:
       - name: Running InSpec 正常性テスト (WEBサーバ機能テスト)
         continue-on-error: true
         id: inspec-check-1
-        run: for i in `knife search 'policy_group:aws AND policy_name:web-server' -i -c .chef/config.rb | sort`; do inspec exec test/setup_nginx_test.rb --sudo --target ssh://ec2-user@$i -i /home/r-goto/r-goto_aws-osaka.pem || echo "::set-output name=INSPEC-RESULT::機能不具合の検知"; done
+        run: for i in `knife search 'policy_group:aws AND policy_name:web-server ' -a cloud.public_ipv4_addrs -i -c .chef/config.rb | sort`; do inspec exec test/setup_nginx_test.rb --sudo --target ssh://ec2-user@$i -i /home/r-goto/r-goto_aws-osaka.pem || echo "::set-output name=INSPEC-RESULT::機能不具合の検知"; done
 
       - name: Running InSpec 正常性テスト (DBサーバ機能テスト)
         continue-on-error: true
         id: inspec-check-last
         if: steps.inspec-check-1.outcome == 'success'
-        run: for i in `knife search 'policy_group:aws AND policy_name:db-server' -i -c .chef/config.rb | sort`; do inspec exec test/setup_postgresql_test.rb --sudo --target ssh://ec2-user@$i -i /home/r-goto/r-goto_aws-osaka.pem || echo "::set-output name=INSPEC-RESULT::機能不具合の検知"; done
+        run: for i in `knife search 'policy_group:aws AND policy_name:db-server' -a cloud.public_ipv4_addrs -i -c .chef/config.rb | sort`; do inspec exec test/setup_postgresql_test.rb --sudo --target ssh://ec2-user@$i -i /home/r-goto/r-goto_aws-osaka.pem || echo "::set-output name=INSPEC-RESULT::機能不具合の検知"; done
 
       - name: 不具合通知 (slack)
         continue-on-error: true
@@ -108,7 +108,7 @@ jobs:
       - name: Running InSpec セキュリティテスト
         id: security-check
         continue-on-error: true
-        run: for i in `knife search 'policy_group:aws' -i -c .chef/config.rb | sort`; do inspec exec --sudo test/ssh_security_test.rb --target ssh://ec2-user@$i -i /home/r-goto/r-goto_aws-osaka.pem || echo "::set-output name=INSPEC_RESULT::重大なセキュリティ問題の検知"; done
+        run: for i in `knife search 'policy_group:aws' -a cloud.public_ipv4_addrs -i -c .chef/config.rb | sort`; do inspec exec --sudo test/ssh_security_test.rb --target ssh://ec2-user@$i -i /home/r-goto/r-goto_aws-osaka.pem || echo "::set-output name=INSPEC_RESULT::重大なセキュリティ問題の検知"; done
         
       - name: 不具合通知 (slack)
         continue-on-error: true
