@@ -51,3 +51,4 @@ resource "aws_instance" "instance" {
       private_key = file("/home/r-goto/r-goto_aws-osaka.pem")
     }
   }
+}
