@@ -12,8 +12,8 @@ provider "aws" {
 }
 
 resource "aws_instance" "instance" {
-  count         = 5
-  ami           = "ami-0b96303a469fa0678"
+  count         = 1
+  ami           = "ami-0e84efdfa6310d77f"
   instance_type = "t2.large"
   vpc_security_group_ids = [
     "sg-0803dfbfc0c77a2f4",
@@ -22,25 +22,8 @@ resource "aws_instance" "instance" {
   key_name = "r-goto-osaka"
   tags = {
     Owner = "r-goto"
-    Name = format("chef-demo-node-web%02d", count.index + 1)
+    Name = format("chef-terraform-demo-node%02d", count.index + 1)
     Project = "chef-demo"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo hostnamectl set-hostname AWS-web-node`date +%d%S`",
-      "sudo dnf -y install wget",
-      "sudo wget -O /tmp/chef.rpm  https://packages.chef.io/files/stable/chef/16.13.16/el/8/chef-16.13.16-1.el7.x86_64.rpm",
-      "sudo rpm -Uvh /tmp/chef.rpm",
-      "sudo chef-client -z --chef-license accept",
-      "sudo chmod 777 /etc/chef"
-    ]
-    connection {
-      host = self.public_ip
-      user = "ec2-user"
-      type = "ssh"
-      private_key = file("/home/r-goto/r-goto_aws-osaka.pem")
-    }
   }
 
   provisioner "file" {
@@ -57,6 +40,7 @@ resource "aws_instance" "instance" {
 
   provisioner "remote-exec" {
     inline = [
+      "sudo hostnamectl set-hostname AWS-web-node`date +%d%S`",
       "sudo knife ssl fetch",
       "sudo chef-client"
     ]
@@ -67,4 +51,3 @@ resource "aws_instance" "instance" {
       private_key = file("/home/r-goto/r-goto_aws-osaka.pem")
     }
   }
-}
