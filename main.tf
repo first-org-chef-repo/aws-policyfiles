@@ -41,7 +41,6 @@ resource "aws_instance" "instance" {
   provisioner "remote-exec" {
     inline = [
       "sudo hostnamectl set-hostname AWS-web-node`date +%d%S`",
-      "sudo knife ssl fetch",
       "sudo chef-client"
     ]
     connection {
