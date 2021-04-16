@@ -75,18 +75,18 @@ jobs:
       - name: Running InSpec 正常性テスト (基本テスト)
         continue-on-error: true
         id: inspec-check-0
-        run: for i in `knife search 'policy_group:aws' -i -c .chef/config.rb | sort`; do inspec exec test/default_test.rb --sudo --target ssh://r-goto@$i -i ~/.ssh/nodes_shared || echo "::set-output name=INSPEC-RESULT::機能不具合の検知"; done      
+        run: for i in `knife search 'policy_group:aws' -i -c .chef/config.rb | sort`; do inspec exec test/default_test.rb --sudo --target ssh://ec2-user@$i -i /home/r-goto/r-goto_aws-osaka.pem || echo "::set-output name=INSPEC-RESULT::機能不具合の検知"; done      
 
       - name: Running InSpec 正常性テスト (WEBサーバ機能テスト)
         continue-on-error: true
         id: inspec-check-1
-        run: for i in `knife search 'policy_group:aws AND policy_name:web-server' -i -c .chef/config.rb | sort`; do inspec exec test/setup_nginx_test.rb --sudo --target ssh://r-goto@$i -i ~/.ssh/nodes_shared || echo "::set-output name=INSPEC-RESULT::機能不具合の検知"; done
+        run: for i in `knife search 'policy_group:aws AND policy_name:web-server' -i -c .chef/config.rb | sort`; do inspec exec test/setup_nginx_test.rb --sudo --target ssh://ec2-user@$i -i /home/r-goto/r-goto_aws-osaka.pem || echo "::set-output name=INSPEC-RESULT::機能不具合の検知"; done
 
       - name: Running InSpec 正常性テスト (DBサーバ機能テスト)
         continue-on-error: true
         id: inspec-check-last
         if: steps.inspec-check-1.outcome == 'success'
-        run: for i in `knife search 'policy_group:aws AND policy_name:db-server' -i -c .chef/config.rb | sort`; do inspec exec test/setup_postgresql_test.rb --sudo --target ssh://r-goto@$i -i ~/.ssh/nodes_shared || echo "::set-output name=INSPEC-RESULT::機能不具合の検知"; done
+        run: for i in `knife search 'policy_group:aws AND policy_name:db-server' -i -c .chef/config.rb | sort`; do inspec exec test/setup_postgresql_test.rb --sudo --target ssh://ec2-user@$i -i /home/r-goto/r-goto_aws-osaka.pem || echo "::set-output name=INSPEC-RESULT::機能不具合の検知"; done
 
       - name: 不具合通知 (slack)
         continue-on-error: true
@@ -108,7 +108,7 @@ jobs:
       - name: Running InSpec セキュリティテスト
         id: security-check
         continue-on-error: true
-        run: for i in `knife search 'policy_group:aws' -i -c .chef/config.rb | sort`; do inspec exec --sudo test/ssh_security_test.rb --target ssh://r-goto@$i -i ~/.ssh/nodes_shared || echo "::set-output name=INSPEC_RESULT::重大なセキュリティ問題の検知"; done
+        run: for i in `knife search 'policy_group:aws' -i -c .chef/config.rb | sort`; do inspec exec --sudo test/ssh_security_test.rb --target ssh://ec2-user@$i -i /home/r-goto/r-goto_aws-osaka.pem || echo "::set-output name=INSPEC_RESULT::重大なセキュリティ問題の検知"; done
         
       - name: 不具合通知 (slack)
         continue-on-error: true
@@ -117,8 +117,8 @@ jobs:
         env:
           INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
-          text: "!!!!検証環境ノードに重大なセキュリティ問題 検知!!!!"
+          text: "!!!!【AWS環境】インスタンスに重大なセキュリティ問題 検知!!!!"
 
       - name: InSpec セキュリティテスト結果
         if: contains ( steps.security-check.outputs.INSPEC_RESULT, '重大なセキュリティ問題' )
-        run: echo "!!!!検証環境ノードに重大なセキュリティ問題 検知!!!" && exit 1
+        run: echo "!!!!【AWS環境】インスタンスに重大なセキュリティ問題 検知!!!" && exit 1
