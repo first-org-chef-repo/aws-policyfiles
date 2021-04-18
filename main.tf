@@ -12,7 +12,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "instance" {
-  count         = 5
+  count         = 3
   ami           = "ami-04e9946bff41abb20"
   instance_type = "t2.large"
   vpc_security_group_ids = [
