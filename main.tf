@@ -12,7 +12,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "instance" {
-  count         = 3
+  count         = 5
   ami           = "ami-04e9946bff41abb20"
   instance_type = "t2.large"
   vpc_security_group_ids = [
@@ -35,6 +35,7 @@ resource "aws_instance" "instance" {
       user = "ec2-user"
       type = "ssh"
       private_key = file("/home/r-goto/r-goto_aws-osaka.pem")
+      timeout = 10m
     }
   }
 
@@ -48,6 +49,7 @@ resource "aws_instance" "instance" {
       user = "ec2-user"
       type = "ssh"
       private_key = file("/home/r-goto/r-goto_aws-osaka.pem")
+      timeout = 10m
     }
   }
 }
