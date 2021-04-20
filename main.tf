@@ -42,6 +42,7 @@ resource "aws_instance" "instance" {
   provisioner "remote-exec" {
     inline = [
       "sudo hostnamectl set-hostname AWS-web-node`date +%d%S`",
+      "sleep 5",
       "sudo chef-client"
     ]
     connection {
