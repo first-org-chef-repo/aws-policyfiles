@@ -46,7 +46,7 @@ jobs:
       - name: Destroying up AWS Instances
         run: |
           terraform init
-          terraform apply -auto-approve
+          terraform destroy -auto-approve
 
       - name: Cleaning up node/client on Chef ChefServer
         run: |
