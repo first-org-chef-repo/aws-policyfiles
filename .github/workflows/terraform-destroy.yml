@@ -3,48 +3,49 @@ name: Destroy Converged AWS Instances
 on: workflow_dispatch
 
 jobs:
-  Setup-Terraform:
-    runs-on: self-hosted
-    steps:
-      - name: Terraform Installed?
-        continue-on-error: true
-        id: check-terraform
-        run: terraform -v
+#   Setup-Terraform:
+#     runs-on: self-hosted
+#     steps:
+#       - name: Terraform Installed?
+#         continue-on-error: true
+#         id: check-terraform
+#         run: terraform -v
         
-      - name: Installing ChefWorkstation v21.2.278
-        if: steps.check-terraform.outcome == 'failure'
-        run: |
-          sudo yum install -y wget unzip
-          sudo yum install -y yum-utils
-          sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-          sudo yum install -y terraform
-          terraform -v
+#       - name: Installing ChefWorkstation v21.2.278
+#         if: steps.check-terraform.outcome == 'failure'
+#         run: |
+#           sudo yum install -y wget unzip
+#           sudo yum install -y yum-utils
+#           sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+#           sudo yum install -y terraform
+#           terraform -v
 
-  Setup-ChefWorkstation:
-    runs-on: self-hosted
-    steps:
-      - name: Chef Installed?
-        continue-on-error: true
-        id: check-chef
-        run: chef -v
+#   Setup-ChefWorkstation:
+#     runs-on: self-hosted
+#     steps:
+#       - name: Chef Installed?
+#         continue-on-error: true
+#         id: check-chef
+#         run: chef -v
         
-      - name: Installing ChefWorkstation v21.2.278
-        if: steps.check-chef.outcome == 'failure'
-        run: |
-          wget https://packages.chef.io/files/stable/chef-workstation/21.2.278/el/8/chef-workstation-21.2.278-1.el7.x86_64.rpm
-          sudo rpm -ivh chef-workstation-21.2.278-1.el7.x86_64.rpm
-          rm chef-workstation-21.2.278-1.el7.x86_64.rpm
-          chef -v
+#       - name: Installing ChefWorkstation v21.2.278
+#         if: steps.check-chef.outcome == 'failure'
+#         run: |
+#           wget https://packages.chef.io/files/stable/chef-workstation/21.2.278/el/8/chef-workstation-21.2.278-1.el7.x86_64.rpm
+#           sudo rpm -ivh chef-workstation-21.2.278-1.el7.x86_64.rpm
+#           rm chef-workstation-21.2.278-1.el7.x86_64.rpm
+#           chef -v
           
   Terraform-Destroy:
     runs-on: self-hosted
-    needs: [ Setup-Terraform, Setup-ChefWorkstation ]
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: Destroying AWS Instances
         run: |
+          terraform -v
+          chef -v
           terraform init
           terraform destroy -auto-approve
 
