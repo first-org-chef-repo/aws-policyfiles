@@ -64,7 +64,8 @@ jobs:
       - name: Running Terraform
         run: |
           terraform init
-          terraform apply -auto-approve || echo "ssh -i ~/.ssh/Private_keys/r-goto_aws-osaka.pem -l ec2-user -o IdentitiesOnly=yes" || knife ec2 server list -V      
+          terraform apply -auto-approve || echo "ssh -i ~/.ssh/Private_keys/r-goto_aws-osaka.pem -l ec2-user -o IdentitiesOnly=yes"
+          knife ec2 server list -V
           
 #   Inspec-Test:
 #     runs-on: self-hosted
