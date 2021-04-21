@@ -65,6 +65,7 @@ jobs:
         run: |
           terraform init
           terraform apply -auto-approve
+          knife ec2 server list -V
           
 #   Inspec-Test:
 #     runs-on: self-hosted
