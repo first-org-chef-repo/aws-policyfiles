@@ -5,17 +5,18 @@
 
 name 'web-server'
 default_source :chef_server, 'https://chef-automate.creationline.com/organizations/first-org'
-run_list 'bootstrap_a_node::default', 'nginx_setup::default'
+run_list 'bootstrap_a_node::default', 'nginx_setup::default', 'ssh_setup::default'
 cookbook 'bootstrap_a_node', '1.0.0'
 cookbook 'nginx_setup', '2.0.0'
+cookbook 'ssh_setup', '2.0.0'
 
 ##########
 # Attributes
 ##########
 
 # Specify CCR interval and splay
-override['chef_client']['interval'] = 60 # 24H
-override['chef_client']['splay'] = 0
+override['chef_client']['interval'] = 1800 # 24H
+override['chef_client']['splay'] = 60
 
 # Specify Policy name & Policy group
 override['bootstrap_a_node']['policy_name'] = 'web-server'
