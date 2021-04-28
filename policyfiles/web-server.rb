@@ -14,7 +14,7 @@ cookbook 'nginx_setup', '2.0.0'
 ##########
 
 # Specify CCR interval and splay
-override['chef_client']['interval'] = 1800 # 24H
+override['chef_client']['interval'] = 60 # 24H
 override['chef_client']['splay'] = 0
 
 # Specify Policy name & Policy group
