@@ -5,8 +5,8 @@
 
 name 'db-server'
 default_source :chef_server, 'https://chef-automate.creationline.com/organizations/first-org'
-run_list 'bootstrap_a_node::default', 'postgresql_setup::default'
-cookbook 'bootstrap_a_node', '1.0.0'
+run_list 'node_setup::default', 'postgresql_setup::default'
+cookbook 'node_setup', '1.0.0'
 cookbook 'postgresql_setup', '1.0.0'
 
 ##########
@@ -18,14 +18,14 @@ override['chef_client']['interval'] = 86400 # 24H
 override['chef_client']['splay'] = 0
 
 # Specify Policy name & Policy group
-override['bootstrap_a_node']['policy_name'] = 'db-server'
-override['bootstrap_a_node']['policy_group'] = 'aws'
+override['node_setup']['policy_name'] = 'db-server'
+override['node_setup']['policy_group'] = 'aws'
 
 # Specify chef-client version
-override['bootstrap_a_node']['chef_client']['version'] = '16.11.7'
-override['bootstrap_a_node']['chef_client']['channel'] = 'stable'
+override['node_setup']['chef_client']['version'] = '16.11.7'
+override['node_setup']['chef_client']['channel'] = 'stable'
 
 # Disable Slack Notification that's set only for the initial CCR
 override['chef_client']['handler']['slack']['enabled'] = false
 # Specify node Time Zone
-override['bootstrap_a_node']['timezone'] = 'Asia/Tokyo'
+override['node_setup']['timezone'] = 'Asia/Tokyo'
