@@ -1,6 +1,12 @@
 name: Converge Nodes
 
-on: workflow_dispatch
+on:
+  push:
+    branches: 
+      - main
+    paths:
+      - 'policyfiles/**'
+  workflow_dispatch:
 
 jobs:
   Push-Policyfile:
