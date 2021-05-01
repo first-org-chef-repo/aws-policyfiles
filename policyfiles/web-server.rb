@@ -30,3 +30,20 @@ override['bootstrap_a_node']['chef_client']['channel'] = 'stable'
 override['chef_client']['handler']['slack']['enabled'] = false
 # Specify node Time Zone
 override['bootstrap_a_node']['timezone'] = 'Asia/Tokyo'
+
+# Invoke the Compliance Phase
+override['audit']['compliance_phase']
+# Set profile location
+default['audit']['profiles']['ssh-baseline'] = {
+  'compliance': 'admin/ssh-baseline',
+  'version': '1.0.0'
+}
+
+default['audit']['profiles']['nginx-baseline'] = {
+  'compliance': 'admin/nginx-baseline',
+  'version': '1.0.0'
+}
+
+# Set Fetcher&Reporter
+default['audit']['fetcher'] = 'chef-server'
+default['audit']['reporter'] = 'chef-server-automate'
