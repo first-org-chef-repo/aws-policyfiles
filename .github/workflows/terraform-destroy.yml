@@ -1,4 +1,4 @@
-name: Destroy Converged AWS Instances
+name: Destroy All Instances
 
 on: workflow_dispatch
 
