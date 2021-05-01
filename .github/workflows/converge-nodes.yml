@@ -1,0 +1,25 @@
+name: Converge Nodes
+
+on: workflow_dispatch
+
+jobs:
+  Push-Policyfile:
+    runs-on: self-hosted
+    needs: [ Setup-Terraform, Setup-ChefWorkstation ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Pushing Policyfile to ChefServer
+        run: |
+          rm -rf policyfiles/*.lock.json
+          chef update policyfiles/db-server.rb -c .chef/config.rb
+          chef update policyfiles/web-server.rb -c .chef/config.rb
+          chef push aws policyfiles/db-server.rb -c .chef/config.rb
+          chef push aws policyfiles/web-server.rb -c .chef/config.rb
+          
+  Converge-Nodes:
+    runs-on: self-hosted
+    needs: Push-Policyfile
+    steps:
+      - name: Converging all AWS nodes...
+        run: 
+          knife ssh 'policy_group:aws' 'sudo chef-client' -c .chef/config.rb
