@@ -21,4 +21,4 @@ jobs:
     steps:
       - name: Converging all AWS nodes...
         run: 
-          knife ssh 'policy_group:aws' 'sudo chef-client' -c .chef/config.rb
+          knife ssh 'policy_group:aws' -x ec2-user -a cloud.public_ipv4 -i /home/r-goto/r-goto_aws-osaka.pem 'sudo chef-client' -c .chef/config.rb
