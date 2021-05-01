@@ -8,11 +8,15 @@ default_source :chef_server, 'https://chef-automate.creationline.com/organizatio
 run_list 'node_setup::default', 'nginx_setup::default', 'ssh_setup::default'
 cookbook 'node_setup', '1.0.0'
 cookbook 'nginx_setup', '2.0.0'
-cookbook 'ssh_setup', '1.0.0'
+# cookbook 'ssh_setup', '1.0.0'
+cookbook 'ssh_setup', '2.0.0'
 
 ##########
 # Attributes
 ##########
+
+# Specify node Time Zone
+override['node_setup']['timezone'] = 'Asia/Tokyo'
 
 # Specify CCR interval and splay
 override['chef_client']['interval'] = 1800 # 24H
@@ -28,9 +32,6 @@ override['node_setup']['chef_client']['channel'] = 'stable'
 
 # Disable Slack Notification that's set only for the initial CCR
 override['chef_client']['handler']['slack']['enabled'] = false
-
-# Specify node Time Zone
-override['node_setup']['timezone'] = 'Asia/Tokyo'
 
 # Invoke the Compliance Phase
 override['audit']['compliance_phase']
