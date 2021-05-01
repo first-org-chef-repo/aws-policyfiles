@@ -32,13 +32,3 @@ jobs:
         run: |
           terraform init
           terraform apply -auto-approve || echo "ssh -i ~/.ssh/Private_keys/r-goto_aws-osaka.pem -l ec2-user -o IdentitiesOnly=yes"
-  
-  Instances:
-    runs-on: self-hosted
-    needs: Terraform-Apply
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    steps:
-      - name: Getting Instances Info
-        run: knife ec2 server list -V | grep "running"
