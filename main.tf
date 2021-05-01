@@ -28,7 +28,7 @@ resource "aws_instance" "instance" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo hostnamectl set-hostname AWS-node`uuidgen | grep -o '..$'`",
+      "sudo hostnamectl set-hostname AWS-node_`uuidgen | grep -o '..$'`",
       "sudo chef-client"
     ]
     connection {
