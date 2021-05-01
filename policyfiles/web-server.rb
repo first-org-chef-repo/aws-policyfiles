@@ -8,7 +8,7 @@ default_source :chef_server, 'https://chef-automate.creationline.com/organizatio
 run_list 'node_setup::default', 'nginx_setup::default', 'ssh_setup::default'
 cookbook 'node_setup', '1.0.0'
 cookbook 'nginx_setup', '2.0.0'
-cookbook 'ssh_setup', '2.0.0'
+cookbook 'ssh_setup', '1.0.0'
 
 ##########
 # Attributes
@@ -29,4 +29,25 @@ override['node_setup']['chef_client']['channel'] = 'stable'
 # Disable Slack Notification that's set only for the initial CCR
 override['chef_client']['handler']['slack']['enabled'] = false
 # Specify node Time Zone
+<<<<<<< HEAD
 override['node_setup']['timezone'] = 'Asia/Tokyo'
+=======
+override['bootstrap_a_node']['timezone'] = 'Asia/Tokyo'
+
+# Invoke the Compliance Phase
+override['audit']['compliance_phase']
+# Set profile location
+default['audit']['profiles']['ssh-baseline'] = {
+  'compliance': 'admin/ssh-baseline',
+  'version': '1.0.0'
+}
+
+default['audit']['profiles']['nginx-baseline'] = {
+  'compliance': 'admin/nginx-baseline',
+  'version': '1.0.0'
+}
+
+# Set Fetcher&Reporter
+default['audit']['fetcher'] = 'chef-server'
+default['audit']['reporter'] = 'chef-server-automate'
+>>>>>>> e310fddd4fefc9992f730dc7523f732dd33ad576
