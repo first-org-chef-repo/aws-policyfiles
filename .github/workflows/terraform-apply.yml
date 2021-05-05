@@ -1,4 +1,4 @@
-name: Create Converged AWS Instances
+name: Terraform Apply w/ Chef
 
 on: workflow_dispatch
 
